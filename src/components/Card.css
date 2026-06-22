@@ -1,0 +1,208 @@
+.card-container {
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+}
+
+.card-container:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+}
+
+.card-container.is-dragging {
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.02);
+  z-index: 100;
+}
+
+/* Cores dos Cartões */
+.color-green { background-color: var(--card-green); border-color: var(--card-green-border); }
+.color-orange { background-color: var(--card-orange); border-color: var(--card-orange-border); }
+.color-yellow { background-color: var(--card-yellow); border-color: var(--card-yellow-border); }
+.color-blue { background-color: var(--card-blue); border-color: var(--card-blue-border); }
+.color-red { background-color: var(--card-red); border-color: var(--card-red-border); }
+.color-gray { background-color: var(--card-gray); border-color: var(--card-gray-border); }
+
+.icon-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-green-dark { background-color: #38A169; }
+.color-orange-dark { background-color: #ED8936; }
+.color-yellow-dark { background-color: #ECC94B; }
+.color-blue-dark { background-color: #3C64F4; }
+.color-red-dark { background-color: #E53E3E; }
+.color-gray-dark { background-color: #A0AEC0; }
+
+.dot-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.card-time {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.card-users {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -8px;
+  background-color: #E2E2E2;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar:first-child {
+  margin-left: 0;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.more-users {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.more-users span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.card-actions-wrapper {
+  position: relative;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.action-btn:hover {
+  background-color: white;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.card-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  width: 160px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  width: 100%;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background-color: var(--card-gray);
+}
+
+.text-danger {
+  color: #E53E3E;
+}
+
+.text-danger:hover {
+  background-color: #FFF5F5;
+}
+
+.edit-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-card-form input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.edit-actions button {
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.text-success { color: #38A169; }
+.text-success:hover { background-color: #F0FFF4; }

@@ -1,0 +1,113 @@
+.list-wrapper {
+  width: 280px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Linha vertical separadora baseada no modelo */
+.list-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -12px;
+  height: 100%;
+  width: 1px;
+  background-color: var(--border-color);
+}
+
+.list-wrapper:last-child::after {
+  display: none;
+}
+
+.list-header {
+  padding: 8px 0 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.list-cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 150px;
+  padding: 0 4px; /* para sombra do card nao cortar */
+  transition: background-color 0.2s ease;
+  border-radius: var(--radius-md);
+}
+
+.list-cards.dragging-over {
+  background-color: var(--bg-primary);
+}
+
+.add-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.add-card-btn:hover {
+  background-color: var(--card-gray);
+  color: var(--text-primary);
+}
+
+.add-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: white;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.add-card-form textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: none;
+  border: none;
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: transparent;
+}
+
+.add-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: var(--card-gray);
+  color: var(--text-primary);
+}

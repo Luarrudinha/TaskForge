@@ -1,0 +1,136 @@
+.overview-container {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.overview-header {
+  margin-bottom: 32px;
+}
+
+.overview-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.boards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.board-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.board-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--card-blue-border);
+}
+
+.board-card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--bg-primary-rgb), 0.5), rgba(var(--bg-secondary-rgb), 0.5));
+}
+
+.board-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.board-card-footer {
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+}
+
+.new-board-btn {
+  background-color: transparent;
+  border: 2px dashed var(--border-color);
+  box-shadow: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.new-board-btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.new-board-btn span {
+  font-weight: 600;
+}
+
+.create-form {
+  padding: 16px;
+  justify-content: center;
+  gap: 12px;
+  background-color: var(--bg-secondary);
+  cursor: default;
+}
+
+.create-form:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-color);
+}
+
+.create-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.create-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.create-actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-save {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.btn-cancel {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}

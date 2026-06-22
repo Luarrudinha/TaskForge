@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Cores Base e Backgrounds */
+  --bg-primary: #F8F9FA;
+  --bg-primary-rgb: 248, 249, 250;
+  --bg-secondary: #FFFFFF;
+  --bg-secondary-rgb: 255, 255, 255;
+  --bg-sidebar: #FFFFFF;
+  
+  /* Cores de Texto */
+  --text-primary: #1A1D1F;
+  --text-secondary: #6F767E;
+  --text-inverse: #FFFFFF;
+  
+  /* Cores de Destaque / Botões / Interações */
+  --accent-primary: #111315;
+  --accent-hover: #272B30;
+  
+  /* Cores dos Cartões (Pastel) Baseado no modelo */
+  --card-green: #E4F3EB;
+  --card-green-border: #C8E6D6;
+  
+  --card-orange: #FCECE4;
+  --card-orange-border: #F7D4C3;
+  
+  --card-yellow: #FEF5E6;
+  --card-yellow-border: #FBE6C6;
+  
+  --card-blue: #E8EFFB;
+  --card-blue-border: #D1E0F7;
+  
+  --card-red: #FAE9EB;
+  --card-red-border: #F3D0D5;
+  
+  --card-gray: #F4F4F4;
+  --card-gray-border: #E8E8E8;
+  
+  /* Linhas e Bordas */
+  --border-color: #EFEFEF;
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  
+  /* Arredondamentos */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+.dark {
+  --bg-primary: #0F172A;
+  --bg-primary-rgb: 15, 23, 42;
+  --bg-secondary: #1E293B;
+  --bg-secondary-rgb: 30, 41, 59;
+  --bg-sidebar: #1E293B;
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-inverse: #0F172A;
+  
+  --accent-primary: #FFFFFF;
+  --accent-hover: #CBD5E1;
+  
+  --border-color: #334155;
+  
+  --card-green: #064E3B;
+  --card-green-border: #047857;
+  
+  --card-orange: #7C2D12;
+  --card-orange-border: #C2410C;
+  
+  --card-yellow: #713F12;
+  --card-yellow-border: #A16207;
+  
+  --card-blue: #1E3A8A;
+  --card-blue-border: #1D4ED8;
+  
+  --card-red: #7F1D1D;
+  --card-red-border: #B91C1C;
+  
+  --card-gray: #334155;
+  --card-gray-border: #475569;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Utilitários Gerais */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.text-sm { font-size: 0.875rem; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.text-secondary { color: var(--text-secondary); }

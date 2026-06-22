@@ -1,0 +1,36 @@
+.board-container {
+  display: flex;
+  padding: 24px 32px;
+  gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  background-color: var(--bg-secondary);
+  border-top-left-radius: var(--radius-xl);
+  border-left: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+  margin-top: 16px;
+  box-shadow: -4px -4px 20px rgba(0,0,0,0.02);
+}
+
+/* Esconde scrollbar mas mantém funcionando */
+.board-container::-webkit-scrollbar {
+  height: 8px;
+}
+.board-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.board-container::-webkit-scrollbar-thumb {
+  background: #E2E2E2;
+  border-radius: 4px;
+}
+
+.has-bg .board-container {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.has-bg .list-container {
+  background-color: rgba(var(--bg-secondary-rgb), 0.8);
+  backdrop-filter: blur(12px);
+}
