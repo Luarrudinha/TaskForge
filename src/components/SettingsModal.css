@@ -104,3 +104,32 @@
 .settings-actions {
   margin-top: 16px;
 }
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+  }
+  
+  .modal-body {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
+  
+  .settings-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  
+  .settings-main {
+    padding: 16px;
+  }
+  
+  .settings-form {
+    max-width: 100%;
+  }
+}

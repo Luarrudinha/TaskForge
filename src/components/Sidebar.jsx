@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-export default function Sidebar({ activeView, onChangeView, onOpenSettings }) {
+export default function Sidebar({ activeView, onChangeView, onOpenSettings, isOpen, onClose }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function Sidebar({ activeView, onChangeView, onOpenSettings }) {
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-container">
           <div className="logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -6,7 +6,7 @@ import Login from './components/Login';
 import CalendarView from './components/CalendarView';
 import SettingsModal from './components/SettingsModal';
 import MeetingAlert from './components/MeetingAlert';
-import { Search, Plus, LogOut, Share2 } from 'lucide-react';
+import { Search, Plus, LogOut, Share2, Menu } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import './App.css';
 
@@ -21,6 +21,7 @@ function MainApp({ session }) {
   const [activeBoardId, setActiveBoardId] = useState(sharedBoardId || null);
   const [showSettings, setShowSettings] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [bgImage, setBgImage] = useState(localStorage.getItem('datewise_bg') || '');
 
@@ -61,15 +62,33 @@ function MainApp({ session }) {
     <div className="app-container" style={{ backgroundColor: bgImage ? 'transparent' : 'var(--bg-primary)' }}>
       <Sidebar 
         activeView={activeView} 
-        onChangeView={setActiveView} 
-        onOpenSettings={() => setShowSettings(true)} 
+        onChangeView={(view) => {
+          setActiveView(view);
+          setIsMobileMenuOpen(false);
+        }} 
+        onOpenSettings={() => {
+          setShowSettings(true);
+          setIsMobileMenuOpen(false);
+        }}
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
       />
       
+      {/* Overlay para fechar o menu no celular */}
+      {isMobileMenuOpen && (
+        <div className="mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+
       <main className={`main-content ${bgImage ? 'has-bg' : ''}`} style={mainStyle}>
         <header className="header" style={{ backgroundColor: bgImage ? 'rgba(var(--bg-primary-rgb), 0.8)' : 'var(--bg-primary)', backdropFilter: bgImage ? 'blur(10px)' : 'none' }}>
-          <div className="search-bar" style={{ backgroundColor: bgImage ? 'var(--bg-primary)' : 'var(--bg-secondary)' }}>
-            <Search size={18} className="text-secondary" />
-            <input type="text" placeholder="Search" />
+          <div className="header-left">
+            <button className="icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu size={20} />
+            </button>
+            <div className="search-bar" style={{ backgroundColor: bgImage ? 'var(--bg-primary)' : 'var(--bg-secondary)' }}>
+              <Search size={18} className="text-secondary" />
+              <input type="text" placeholder="Search" />
+            </div>
           </div>
           
           <div className="header-actions">

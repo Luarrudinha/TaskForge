@@ -1,6 +1,6 @@
 .card-detail-modal {
   background-color: var(--bg-secondary);
-  width: 100%;
+  width: 95%;
   max-width: 650px;
   max-height: 90vh;
   border-radius: var(--radius-lg);
