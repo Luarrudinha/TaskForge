@@ -15,6 +15,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
   const [copied, setCopied] = useState(false);
   const [boardTitle, setBoardTitle] = useState('Meu Quadro');
   const [boardMembers, setBoardMembers] = useState([]);
+  const [expandedListId, setExpandedListId] = useState(null);
 
   const prevBoardIdRef = React.useRef(activeBoardId);
   const prevSharedBoardIdRef = React.useRef(sharedBoardId);
@@ -430,7 +431,9 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {data.listOrder.map((listId, index) => {
+              {data.listOrder
+                .filter(listId => !expandedListId || listId === expandedListId)
+                .map((listId, index) => {
                 const list = data.lists[listId];
                 return (
                   <List
@@ -442,6 +445,8 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
                     onDeleteCard={handleDeleteCard}
                     onEditCard={handleEditCard}
                     session={session}
+                    isExpanded={expandedListId === list.id}
+                    onToggleExpand={() => setExpandedListId(expandedListId === list.id ? null : list.id)}
                   />
                 );
               })}

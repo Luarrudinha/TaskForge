@@ -61,19 +61,24 @@ export default function Card({ card, index, listId, onDeleteCard, onEditCard, se
             onClick={handleCardClick}
             style={{ ...provided.draggableProps.style, cursor: 'pointer' }}
           >
-            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-              <div className="card-tag" style={{ fontSize: '11px', fontWeight: '700', padding: '4px 12px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.6)', color: 'var(--text-primary)' }}>
-                #{card.color === 'blue' ? 'Work' : card.color === 'green' ? 'Design' : card.color === 'yellow' ? 'Personal' : 'Task'}
-              </div>
+            <div className="card-actions-wrapper" style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 10, display: 'flex', gap: '8px' }}>
               <button 
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); }}
                 style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                title="Editar"
               >
-                <Edit2 size={16} />
+                <Edit2 size={14} />
+              </button>
+              <button 
+                onClick={handleDelete}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#E53E3E' }}
+                title="Excluir"
+              >
+                <Trash2 size={14} />
               </button>
             </div>
             
-            <div className="card-body">
+            <div className="card-body" style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', minHeight: 'auto', padding: '0 16px', marginTop: '4px' }}>
               {isEditing ? (
                 <div className="edit-card-form" onClick={e => e.stopPropagation()}>
                   <input 
@@ -93,61 +98,30 @@ export default function Card({ card, index, listId, onDeleteCard, onEditCard, se
                 </div>
               ) : (
                 <>
-                  <h4 className="card-title" style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.4' }}>{card.title}</h4>
+                  <h4 className="card-title" style={{ textAlign: 'center', width: '100%' }}>{card.title}</h4>
                   {card.description && (
-                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '12px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      <strong style={{ fontWeight: '600' }}>Note:</strong> {card.description}
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {card.description}
                     </p>
                   )}
                 </>
               )}
             </div>
 
-            <div className="card-footer">
-              <div className="card-users">
-                {card.users?.map((user, i) => (
-                  <div key={i} className="user-avatar" style={{ zIndex: 10 - i }}>
-                    <img src={`https://i.pravatar.cc/150?u=${user}`} alt="User" />
-                  </div>
-                ))}
-                {card.users?.length > 0 && (
-                  <div className="user-avatar more-users">
-                    <span>12+</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="card-actions-wrapper" ref={menuRef}>
-                <button 
-                  className="action-btn"
-                  onPointerDown={e => e.stopPropagation()}
-                  onMouseDown={e => e.stopPropagation()}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setShowMenu(!showMenu);
-                  }}
-                >
-                  <MoreHorizontal size={16} />
-                </button>
-
-                {showMenu && (
-                  <div 
-                    className="card-menu" 
-                    onClick={e => e.stopPropagation()}
-                    onPointerDown={e => e.stopPropagation()}
-                    onMouseDown={e => e.stopPropagation()}
-                  >
-                    <button className="menu-item" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); setShowMenu(false); }}>
-                      <Edit2 size={14} /> Editar
-                    </button>
-                    <button className="menu-item text-danger" onClick={handleDelete}>
-                      <Trash2 size={14} /> Excluir
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+              {card.users?.length > 0 && (
+                <div className="card-users">
+                  {card.users.map((user, i) => (
+                    <div key={i} className="user-avatar" style={{ zIndex: 10 - i }}>
+                      <img src={`https://i.pravatar.cc/150?u=${user}`} alt="User" />
+                    </div>
+                  ))}
+                  {card.users.length > 0 && (
+                    <div className="user-avatar more-users">
+                      <span>12+</span>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
         )}
       </Draggable>

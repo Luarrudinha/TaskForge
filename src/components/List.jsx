@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, X, MoreHorizontal, ClipboardList } from 'lucide-react';
+import { Plus, X, MoreHorizontal, ClipboardList, Maximize2, Minimize2 } from 'lucide-react';
 import Card from './Card';
 import './List.css';
 
-export default function List({ list, cards, index, onAddCard, onDeleteCard, onEditCard, session }) {
+export default function List({ list, cards, index, onAddCard, onDeleteCard, onEditCard, session, isExpanded, onToggleExpand }) {
   const [isAdding, setIsAdding] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');
+
+  const visibleCards = isExpanded ? cards : cards.slice(0, 8);
+  const hasMore = cards.length > 8;
 
   const handleAddSubmit = (e) => {
     e.preventDefault();
@@ -21,14 +24,23 @@ export default function List({ list, cards, index, onAddCard, onDeleteCard, onEd
     <Draggable draggableId={list.id} index={index}>
       {(provided) => (
         <div
-          className="list-wrapper"
+          className={`list-wrapper ${isExpanded ? 'expanded' : ''}`}
           {...provided.draggableProps}
           ref={provided.innerRef}
         >
           <div className="list-header" {...provided.dragHandleProps}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div 
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: (hasMore || isExpanded) ? 'pointer' : 'default', flex: 1 }} 
+              onClick={() => { if (hasMore || isExpanded) onToggleExpand(); }}
+              title={isExpanded ? "Restaurar coluna" : (hasMore ? "Expandir coluna" : "")}
+            >
               <ClipboardList size={18} color="var(--text-secondary)" />
               <h3 className="list-title">{list.title} ({cards.length})</h3>
+              {(hasMore || isExpanded) && (
+                <div style={{ marginLeft: '4px', color: 'var(--text-secondary)', display: 'flex' }}>
+                  {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                </div>
+              )}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)' }}>
               <Plus size={18} style={{ cursor: 'pointer' }} onClick={() => setIsAdding(true)} />
@@ -43,7 +55,7 @@ export default function List({ list, cards, index, onAddCard, onDeleteCard, onEd
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                {cards.map((card, index) => (
+                {visibleCards.map((card, index) => (
                   <Card 
                     key={card.id} 
                     card={card} 
