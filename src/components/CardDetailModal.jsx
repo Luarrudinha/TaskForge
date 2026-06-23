@@ -133,11 +133,25 @@ export default function CardDetailModal({ card, onClose, session }) {
                   autoFocus
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  onBlur={handleSaveDescription}
                   placeholder="Adicione uma descrição mais detalhada..."
+                  style={{ width: '100%', minHeight: '100px', padding: '12px', borderRadius: '6px', border: '2px solid #3C64F4', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', resize: 'vertical', outline: 'none' }}
                 />
-                <div className="desc-actions">
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Salva automaticamente ao clicar fora.</span>
+                <div className="desc-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button 
+                    onClick={handleSaveDescription} 
+                    style={{ padding: '8px 16px', backgroundColor: '#3C64F4', color: 'white', borderRadius: '6px', border: 'none', cursor: 'pointer', fontWeight: '600' }}
+                  >
+                    Salvar
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setDescription(card.description || '');
+                      setIsEditingDesc(false);
+                    }}
+                    style={{ padding: '8px 16px', backgroundColor: 'transparent', color: 'var(--text-secondary)', borderRadius: '6px', border: 'none', cursor: 'pointer', fontWeight: '500' }}
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </div>
             ) : (

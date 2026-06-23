@@ -17,13 +17,39 @@ export default function Overview({ session, onSelectBoard }) {
 
   const fetchBoards = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data: boardsData, error } = await supabase
       .from('boards')
       .select('*')
       .eq('user_id', session.user.id)
       .order('created_at', { ascending: true });
     
-    if (data) setBoards(data);
+    if (boardsData) {
+      const boardIds = boardsData.map(b => b.id);
+      let allMembers = [];
+      
+      try {
+        const { data: membersData, error: memError } = await supabase
+          .from('board_members')
+          .select('board_id, user_email')
+          .in('board_id', boardIds);
+          
+        if (!memError && membersData) {
+          allMembers = membersData;
+        }
+      } catch (err) {
+        // Ignora caso a tabela não exista ainda
+      }
+
+      const enrichedBoards = boardsData.map(board => {
+        const boardMembers = allMembers.filter(m => m.board_id === board.id).map(m => m.user_email);
+        return {
+          ...board,
+          members: [...new Set([session.user.email, ...boardMembers])]
+        };
+      });
+
+      setBoards(enrichedBoards);
+    }
     setLoading(false);
   };
 
@@ -81,9 +107,57 @@ export default function Overview({ session, onSelectBoard }) {
             <div className="board-card-content">
               <h3>{board.title}</h3>
             </div>
-            <div className="board-card-footer">
-              <Users size={14} />
-              <span>Gerenciar Tarefas</span>
+            <div className="board-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Users size={14} />
+                <span>Gerenciar Tarefas</span>
+              </div>
+              
+              {board.members && board.members.length > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {board.members.slice(0, 4).map((email, i) => (
+                    <div 
+                      key={i} 
+                      title={email}
+                      style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        borderRadius: '50%', 
+                        overflow: 'hidden', 
+                        border: '2px solid var(--bg-secondary)', 
+                        marginLeft: i > 0 ? '-8px' : '0',
+                        zIndex: 10 - i,
+                        backgroundColor: '#3C64F4'
+                      }}
+                    >
+                      <img 
+                        src={session?.user?.email === email ? session?.user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150` : `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150`} 
+                        alt="User" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
+                    </div>
+                  ))}
+                  {board.members.length > 4 && (
+                    <div style={{
+                        width: '24px', 
+                        height: '24px', 
+                        borderRadius: '50%', 
+                        border: '2px solid var(--bg-secondary)', 
+                        marginLeft: '-8px',
+                        zIndex: 5,
+                        backgroundColor: 'var(--bg-primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        color: 'var(--text-primary)'
+                    }}>
+                      +{board.members.length - 4}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}

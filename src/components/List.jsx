@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, MoreHorizontal, ClipboardList } from 'lucide-react';
 import Card from './Card';
 import './List.css';
 
@@ -26,7 +26,14 @@ export default function List({ list, cards, index, onAddCard, onDeleteCard, onEd
           ref={provided.innerRef}
         >
           <div className="list-header" {...provided.dragHandleProps}>
-            <h3 className="list-title">{list.title}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ClipboardList size={18} color="var(--text-secondary)" />
+              <h3 className="list-title">{list.title} ({cards.length})</h3>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)' }}>
+              <Plus size={18} style={{ cursor: 'pointer' }} onClick={() => setIsAdding(true)} />
+              <MoreHorizontal size={18} style={{ cursor: 'pointer' }} />
+            </div>
           </div>
           
           <Droppable droppableId={list.id} type="card">

@@ -1,39 +1,28 @@
 .list-wrapper {
-  width: 280px;
-  min-width: 280px;
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  flex: 1;
+  min-width: 250px;
+  max-width: 100%;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  position: relative;
-}
-
-/* Linha vertical separadora baseada no modelo */
-.list-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -12px;
-  height: 100%;
-  width: 1px;
-  background-color: var(--border-color);
-}
-
-.list-wrapper:last-child::after {
-  display: none;
+  margin-right: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
 .list-header {
-  padding: 8px 0 24px 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
 }
 
 .list-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
 }
 
 .list-cards {
@@ -42,9 +31,8 @@
   flex-direction: column;
   gap: 16px;
   min-height: 150px;
-  padding: 0 4px; /* para sombra do card nao cortar */
   transition: background-color 0.2s ease;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
 }
 
 .list-cards.dragging-over {

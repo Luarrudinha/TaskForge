@@ -27,6 +27,9 @@ export default function Login() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/welcome`
+          }
         });
         if (error) throw error;
         alert('Registro concluído! Verifique seu email para confirmação ou faça login se o auto-login estiver ativo.');

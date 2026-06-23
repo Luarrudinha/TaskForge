@@ -2,9 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './SettingsModal.css';
 import { X, User, Shield, Bell, Palette, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+const THEME_COLORS = [
+  { id: 'blue', value: '#3C64F4' },
+  { id: 'green', value: '#00C49F' },
+  { id: 'yellow', value: '#FFBB28' },
+  { id: 'orange', value: '#FF8042' },
+  { id: 'red', value: '#EF4444' },
+  { id: 'default', value: '' } // Padrão
+];
 
 const WALLPAPERS = [
-  { id: 'default', name: 'Cor Sólida (Padrão)', value: '' },
   { id: 'mountains1', name: 'Montanhas Nevadas', value: 'url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2000")' },
   { id: 'mountains2', name: 'Montanhas Escuras', value: 'url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000")' },
   { id: 'abstract', name: 'Abstrato', value: 'url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2000")' }
@@ -68,9 +75,33 @@ export default function SettingsModal({ onClose, session }) {
             {activeTab === 'appearance' && (
               <>
                 <h3>Aparência do Sistema</h3>
-                <p className="text-secondary">Personalize o fundo da tela principal.</p>
+                <p className="text-secondary">Personalize a cor ou imagem de fundo do sistema.</p>
                 
                 <div className="settings-form" style={{ marginTop: '24px' }}>
+                  <div style={{ marginBottom: '32px' }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      {THEME_COLORS.map(color => (
+                        <div
+                          key={color.id}
+                          onClick={() => handleSaveBackground(color.value)}
+                          style={{
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            backgroundColor: color.value || 'var(--bg-primary)',
+                            border: bgImage === color.value 
+                              ? '2px solid var(--text-primary)' 
+                              : (color.value ? '2px solid transparent' : '2px solid var(--border-color)'),
+                            cursor: 'pointer',
+                            transition: 'transform 0.2s',
+                            transform: bgImage === color.value ? 'scale(1.15)' : 'scale(1)',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="wallpapers-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     {WALLPAPERS.map(wp => (
                       <div 

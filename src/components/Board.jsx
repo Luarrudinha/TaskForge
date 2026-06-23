@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 import List from './List';
 import './Board.css';
 import { supabase } from '../lib/supabase';
+import { Plus } from 'lucide-react';
 
 export default function Board({ session, sharedBoardId, activeBoardId }) {
   const [data, setData] = useState({ lists: {}, listOrder: [] });
@@ -14,11 +15,21 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
   const [copied, setCopied] = useState(false);
   const [boardTitle, setBoardTitle] = useState('Meu Quadro');
 
+  const prevBoardIdRef = React.useRef(activeBoardId);
+  const prevSharedBoardIdRef = React.useRef(sharedBoardId);
+  const isInitialLoadRef = React.useRef(true);
+
   useEffect(() => {
     if (!session?.user?.id) return;
     
+    const isBoardSwitch = prevBoardIdRef.current !== activeBoardId || prevSharedBoardIdRef.current !== sharedBoardId;
+    prevBoardIdRef.current = activeBoardId;
+    prevSharedBoardIdRef.current = sharedBoardId;
+
     const fetchBoardData = async () => {
-      setLoading(true);
+      if (isBoardSwitch || isInitialLoadRef.current) {
+        setLoading(true);
+      }
       try {
         let currentBoard = null;
 
@@ -98,8 +109,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
             id: list.id,
             title: list.title,
             cards: cards.filter(c => c.list_id === list.id).map(c => ({
-              id: c.id,
-              title: c.title,
+              ...c,
               time: 'Tarefa',
               color: c.color || 'gray',
               users: []
@@ -113,6 +123,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
         console.error('Error fetching board data:', error);
       } finally {
         setLoading(false);
+        isInitialLoadRef.current = false;
       }
     };
 
@@ -309,15 +320,70 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
 
   return (
     <div className="board-wrapper" style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, padding: '24px', overflowX: 'auto' }}>
-      <div className="board-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>{boardTitle}</h2>
-        <button 
-          onClick={handleShare}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-primary)' }}
-        >
-          {copied ? <Check size={16} color="green" /> : <Share2 size={16} />}
-          {copied ? 'Link Copiado!' : 'Compartilhar'}
-        </button>
+      <div className="board-sub-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+          <div>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', textTransform: 'capitalize' }}>{new Date().toLocaleString('pt-BR', { month: 'long' })}</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' })}</div>
+          </div>
+          <div style={{ height: '32px', width: '1px', backgroundColor: 'var(--border-color)' }}></div>
+          <div>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)' }}>Board</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{boardTitle}</div>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div className="board-users" style={{ display: 'flex', alignItems: 'center' }}>
+            {[session?.user?.email].filter(Boolean).map((email, i) => (
+              <div 
+                key={i} 
+                className="user-avatar" 
+                style={{ 
+                  zIndex: 10 - i, 
+                  marginLeft: i > 0 ? '-12px' : '0',
+                  border: '2px solid var(--bg-primary)',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}
+                title={email}
+              >
+                <img src={session?.user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150`} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            ))}
+          </div>
+          
+          <button 
+            onClick={handleShare}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)', fontWeight: '500', transition: 'all 0.2s' }}
+          >
+            {copied ? <Check size={16} color="#00C49F" /> : <Share2 size={16} />}
+            {copied ? 'Copiado!' : 'Compartilhar'}
+          </button>
+
+          <button 
+            onClick={() => {
+              if (data.listOrder.length > 0) {
+                const firstListId = data.listOrder[0];
+                const title = prompt('Nome da Nova Tarefa:');
+                if (title) handleAddCard(firstListId, title);
+              }
+            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', backgroundColor: '#3C64F4', border: 'none', borderRadius: '12px', cursor: 'pointer', color: 'white', fontWeight: '600', boxShadow: '0 4px 14px rgba(60, 100, 244, 0.4)', transition: 'transform 0.2s' }}
+          >
+            <Plus size={18} /> Nova Tarefa
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', padding: '0 8px' }}>
+        <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>
+          {Object.values(data.lists).reduce((acc, list) => acc + list.cards.length, 0)} Cartões no total
+        </div>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>

@@ -1,33 +1,31 @@
 .card-container {
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   padding: 16px;
   margin-bottom: 12px;
   position: relative;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+  box-shadow: none;
+  border: none;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .card-container:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: var(--shadow-lg);
-  z-index: 10;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .card-container.is-dragging {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
   transform: scale(1.02);
   z-index: 100;
 }
 
-/* Cores dos Cartões */
-.color-green { background-color: var(--card-green); border-color: var(--card-green-border); }
-.color-orange { background-color: var(--card-orange); border-color: var(--card-orange-border); }
-.color-yellow { background-color: var(--card-yellow); border-color: var(--card-yellow-border); }
-.color-blue { background-color: var(--card-blue); border-color: var(--card-blue-border); }
-.color-red { background-color: var(--card-red); border-color: var(--card-red-border); }
-.color-gray { background-color: var(--card-gray); border-color: var(--card-gray-border); }
+/* Cores Pastéis dos Cartões */
+.color-green { background-color: var(--card-green); }
+.color-orange { background-color: var(--card-orange); }
+.color-yellow { background-color: var(--card-yellow); }
+.color-blue { background-color: var(--card-blue); }
+.color-red { background-color: var(--card-red); }
+.color-gray { background-color: #F8FAFC; }
 
 .icon-badge {
   width: 24px;
@@ -69,7 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
+  margin-top: 12px;
 }
 
 .card-users {

@@ -1,16 +1,34 @@
+.board-sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+body.dark .board-sub-header {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .board-container {
   display: flex;
-  padding: 24px 32px;
+  padding: 0;
   gap: 24px;
   overflow-x: auto;
   overflow-y: hidden;
   flex: 1;
-  background-color: var(--bg-secondary);
+  background-color: transparent;
   border-top-left-radius: var(--radius-xl);
-  border-left: 1px solid var(--border-color);
-  border-top: 1px solid var(--border-color);
   margin-top: 16px;
-  box-shadow: -4px -4px 20px rgba(0,0,0,0.02);
 }
 
 /* Esconde scrollbar mas mantém funcionando */

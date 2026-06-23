@@ -61,10 +61,16 @@ export default function Card({ card, index, listId, onDeleteCard, onEditCard, se
             onClick={handleCardClick}
             style={{ ...provided.draggableProps.style, cursor: 'pointer' }}
           >
-            <div className="card-header">
-              <div className={`icon-badge color-${card.color}-dark`}>
-                {card.color === 'orange' ? <Video size={14} color="white" /> : <div className="dot-icon" />}
+            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+              <div className="card-tag" style={{ fontSize: '11px', fontWeight: '700', padding: '4px 12px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.6)', color: 'var(--text-primary)' }}>
+                #{card.color === 'blue' ? 'Work' : card.color === 'green' ? 'Design' : card.color === 'yellow' ? 'Personal' : 'Task'}
               </div>
+              <button 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); }}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+              >
+                <Edit2 size={16} />
+              </button>
             </div>
             
             <div className="card-body">
@@ -86,9 +92,15 @@ export default function Card({ card, index, listId, onDeleteCard, onEditCard, se
                   </div>
                 </div>
               ) : (
-                <h4 className="card-title">{card.title}</h4>
+                <>
+                  <h4 className="card-title" style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.4' }}>{card.title}</h4>
+                  {card.description && (
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '12px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      <strong style={{ fontWeight: '600' }}>Note:</strong> {card.description}
+                    </p>
+                  )}
+                </>
               )}
-              <p className="card-time">{card.time}</p>
             </div>
 
             <div className="card-footer">
@@ -126,17 +138,11 @@ export default function Card({ card, index, listId, onDeleteCard, onEditCard, se
                     onPointerDown={e => e.stopPropagation()}
                     onMouseDown={e => e.stopPropagation()}
                   >
-                    <button className="menu-item" onClick={() => setShowMenu(false)}>
-                      <Bell size={14} /> Set reminder
-                    </button>
-                    <button className="menu-item" onClick={() => setShowMenu(false)}>
-                      <Minimize2 size={14} /> Minimize
-                    </button>
                     <button className="menu-item" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); setShowMenu(false); }}>
-                      <Edit2 size={14} /> Edit
+                      <Edit2 size={14} /> Editar
                     </button>
                     <button className="menu-item text-danger" onClick={handleDelete}>
-                      <Trash2 size={14} /> Delete
+                      <Trash2 size={14} /> Excluir
                     </button>
                   </div>
                 )}

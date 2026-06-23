@@ -37,6 +37,10 @@
   margin-left: 8px;
   width: 100%;
   font-size: 14px;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: none;
+  outline: none;
 }
 
 .header-actions {

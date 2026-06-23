@@ -3,10 +3,13 @@ import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-r
 import Sidebar from './components/Sidebar';
 import Board from './components/Board';
 import Login from './components/Login';
+import Welcome from './components/Welcome';
 import CalendarView from './components/CalendarView';
+import TodoList from './components/TodoList';
 import SettingsModal from './components/SettingsModal';
 import MeetingAlert from './components/MeetingAlert';
-import { Search, Plus, LogOut, Share2, Menu } from 'lucide-react';
+import Analytics from './components/Analytics';
+import { Search, Plus, LogOut, Share2, Menu, Edit2, Bell } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import './App.css';
 
@@ -23,7 +26,9 @@ function MainApp({ session }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [bgImage, setBgImage] = useState(localStorage.getItem('datewise_bg') || '');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -49,6 +54,60 @@ function MainApp({ session }) {
     await supabase.auth.signOut();
   };
 
+  const handleProfileImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const MAX_SIZE = 150;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const base64String = canvas.toDataURL('image/jpeg', 0.7);
+        
+        try {
+          const { error } = await supabase.auth.updateUser({
+            data: { avatar_url: base64String }
+          });
+          if (error) throw error;
+          
+          // Force UI refresh
+          window.location.reload();
+        } catch (error) {
+          console.error("Error updating avatar:", error);
+          alert("Erro ao atualizar foto de perfil.");
+        } finally {
+          setIsUploading(false);
+          setShowProfileMenu(false);
+        }
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const isUrl = bgImage && bgImage.startsWith('url');
   const mainStyle = bgImage ? {
     backgroundImage: isUrl ? bgImage : 'none',
@@ -59,7 +118,7 @@ function MainApp({ session }) {
   } : {};
 
   return (
-    <div className="app-container" style={{ backgroundColor: bgImage ? 'transparent' : 'var(--bg-primary)' }}>
+    <div className="app-container" style={mainStyle}>
       <Sidebar 
         activeView={activeView} 
         onChangeView={(view) => {
@@ -72,6 +131,10 @@ function MainApp({ session }) {
         }}
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        session={session}
+        onEditPhoto={() => fileInputRef.current?.click()}
+        onLogout={handleLogout}
+        isUploading={isUploading}
       />
       
       {/* Overlay para fechar o menu no celular */}
@@ -80,41 +143,21 @@ function MainApp({ session }) {
       )}
 
       <main className={`main-content ${bgImage ? 'has-bg' : ''}`} style={mainStyle}>
-        <header className="header" style={{ backgroundColor: bgImage ? 'rgba(var(--bg-primary-rgb), 0.8)' : 'var(--bg-primary)', backdropFilter: bgImage ? 'blur(10px)' : 'none' }}>
-          <div className="header-left">
+        <header className="app-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 32px', background: 'transparent' }}>
+          <div className="header-left" style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
             <button className="icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
               <Menu size={20} />
             </button>
-            <div className="search-bar" style={{ backgroundColor: bgImage ? 'var(--bg-primary)' : 'var(--bg-secondary)' }}>
-              <Search size={18} className="text-secondary" />
-              <input type="text" placeholder="Search" />
+            <div className="search-bar" style={{ display: 'flex', alignItems: 'center', backgroundColor: 'var(--bg-secondary)', padding: '10px 16px', borderRadius: '12px', width: '100%', maxWidth: '400px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+              <Search size={18} className="text-secondary" style={{ marginRight: '8px' }} />
+              <input type="text" placeholder="Search..." style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', color: 'var(--text-primary)' }} />
             </div>
           </div>
           
-          <div className="header-actions">
-            <button className="icon-btn">
-              <Plus size={20} />
+          <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button className="icon-btn" style={{ background: 'var(--bg-secondary)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+              <Bell size={18} color="var(--text-secondary)" />
             </button>
-            <div className="profile-wrapper" ref={profileMenuRef}>
-              <div 
-                className="profile-avatar" 
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                style={{ cursor: 'pointer' }}
-              >
-                <img src={session?.user?.user_metadata?.avatar_url || `https://i.pravatar.cc/150?u=${session?.user?.id || 'default'}`} alt="Profile" />
-              </div>
-              
-              {showProfileMenu && (
-                <div className="profile-dropdown">
-                  <div className="profile-info">
-                    <p className="profile-email">{session?.user?.email || 'user@example.com'}</p>
-                  </div>
-                  <button className="dropdown-item text-danger" onClick={handleLogout}>
-                    <LogOut size={16} /> Sair
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         </header>
         
@@ -137,6 +180,14 @@ function MainApp({ session }) {
         {activeView === 'calendar' && (
           <CalendarView session={session} />
         )}
+
+        {activeView === 'todo' && (
+          <TodoList session={session} />
+        )}
+
+        {activeView === 'analytics' && (
+          <Analytics session={session} />
+        )}
       </main>
 
       {showSettings && (
@@ -145,6 +196,14 @@ function MainApp({ session }) {
           onClose={() => setShowSettings(false)} 
         />
       )}
+
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        onChange={handleProfileImageUpload} 
+        accept="image/*" 
+        style={{ display: 'none' }} 
+      />
     </div>
   );
 }
@@ -182,6 +241,10 @@ export default function App() {
         <Route 
           path="/login" 
           element={!session ? <Login /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/welcome" 
+          element={<Welcome />} 
         />
       </Routes>
     </BrowserRouter>
