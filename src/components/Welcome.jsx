@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export default function Welcome() {
-  const navigate = useNavigate();
-
   useEffect(() => {
     // Ensure the session is captured if there's a token in the URL
-    supabase.auth.getSession().then(() => {
-      const timer = setTimeout(() => {
-        navigate('/');
-      }, 4000);
-      return () => clearTimeout(timer);
-    });
-  }, [navigate]);
+    supabase.auth.getSession();
+  }, []);
 
   return (
     <div style={{ 
@@ -29,13 +21,15 @@ export default function Welcome() {
       padding: '20px'
     }}>
       <CheckCircle size={80} color="#00C49F" style={{ marginBottom: '24px' }} />
-      <h1 style={{ fontSize: '32px', marginBottom: '16px' }}>Email Confirmado com Sucesso!</h1>
+      <h1 style={{ fontSize: '32px', marginBottom: '16px' }}>E-mail Confirmado!</h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '18px', maxWidth: '500px', lineHeight: '1.5' }}>
-        Bem-vindo ao TaskForge! Sua conta foi verificada e você já está autenticado no sistema.
+        Sua conta foi verificada com sucesso. Você já está conectado.
       </p>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '24px' }}>
-        Redirecionando para o seu painel em instantes...
-      </p>
+      <div style={{ marginTop: '32px', padding: '16px', backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+        <p style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+          Você pode fechar esta aba e voltar para a tela original onde estava fazendo o login!
+        </p>
+      </div>
     </div>
   );
 }

@@ -14,6 +14,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [copied, setCopied] = useState(false);
   const [boardTitle, setBoardTitle] = useState('Meu Quadro');
+  const [boardMembers, setBoardMembers] = useState([]);
 
   const prevBoardIdRef = React.useRef(activeBoardId);
   const prevSharedBoardIdRef = React.useRef(sharedBoardId);
@@ -37,6 +38,18 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
         const targetId = sharedBoardId || activeBoardId;
         
         if (targetId) {
+          // If accessing via shared link, try to join the board
+          if (sharedBoardId) {
+            try {
+              await supabase.from('board_members').insert([{
+                board_id: sharedBoardId,
+                user_email: session.user.email
+              }]);
+            } catch (e) {
+              // Ignore errors (already a member, etc)
+            }
+          }
+
           const { data: boards } = await supabase
             .from('boards')
             .select('*')
@@ -84,6 +97,20 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
         
         setBoardId(currentBoard.id);
         setBoardTitle(currentBoard.title);
+
+        // Fetch board members for avatars
+        try {
+          const { data: members } = await supabase
+            .from('board_members')
+            .select('user_email')
+            .eq('board_id', currentBoard.id);
+          
+          if (members) {
+            setBoardMembers(members.map(m => m.user_email));
+          }
+        } catch (err) {
+          console.error('Error fetching members:', err);
+        }
 
         // 2. Fetch lists and cards
         const { data: lists } = await supabase
@@ -308,7 +335,11 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
   };
 
   const handleShare = () => {
-    const url = `${window.location.origin}/?board=${boardId}`;
+    // Altere este link para o link real onde o seu site vai ficar hospedado!
+    const productionUrl = 'https://taskforge-inpe.vercel.app'; 
+    const baseUrl = window.location.hostname === 'localhost' ? productionUrl : window.location.origin;
+    
+    const url = `${baseUrl}/?board=${boardId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -335,7 +366,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <div className="board-users" style={{ display: 'flex', alignItems: 'center' }}>
-            {[session?.user?.email].filter(Boolean).map((email, i) => (
+            {[...new Set([session?.user?.email, ...boardMembers])].filter(Boolean).map((email, i) => (
               <div 
                 key={i} 
                 className="user-avatar" 
@@ -352,7 +383,11 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
                 }}
                 title={email}
               >
-                <img src={session?.user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150`} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img 
+                  src={session?.user?.email === email ? session?.user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150` : `https://ui-avatars.com/api/?name=${email?.charAt(0).toUpperCase() || 'U'}&background=3C64F4&color=fff&size=150`} 
+                  alt="User" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
               </div>
             ))}
           </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import './Login.css';
-import { LogIn, UserPlus, ClipboardList } from 'lucide-react';
+import { LogIn, UserPlus, ClipboardList, CheckCircle } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,6 +9,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState(null);
+  const [waitingForEmail, setWaitingForEmail] = useState(false);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ export default function Login() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -32,7 +33,10 @@ export default function Login() {
           }
         });
         if (error) throw error;
-        alert('Registro concluído! Verifique seu email para confirmação ou faça login se o auto-login estiver ativo.');
+        
+        if (!data?.session) {
+          setWaitingForEmail(true);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -46,6 +50,22 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (waitingForEmail) {
+    return (
+      <div className="login-container">
+        <div className="login-card" style={{ textAlign: 'center', padding: '40px' }}>
+          <CheckCircle size={48} color="#3C64F4" style={{ margin: '0 auto 16px auto' }} />
+          <h2>Confirme seu e-mail</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '16px', lineHeight: '1.5' }}>
+            Enviamos um link de confirmação para <strong>{email}</strong>.
+            <br/><br/>
+            Por favor, abra a sua caixa de entrada e clique no link. Esta página será atualizada automaticamente assim que você confirmar!
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="login-container">
