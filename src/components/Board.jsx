@@ -129,7 +129,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
 
     fetchBoardData();
 
-  }, [session, sharedBoardId, refreshCounter]);
+  }, [session, sharedBoardId, activeBoardId, refreshCounter]);
 
   // Handle Realtime separately so it depends on boardId
   useEffect(() => {
