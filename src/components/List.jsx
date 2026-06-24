@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, X, MoreHorizontal, ClipboardList, Maximize2, Minimize2 } from 'lucide-react';
+import { Plus, X, MoreHorizontal, ClipboardList, Maximize2, Minimize2, Trash2 } from 'lucide-react';
 import Card from './Card';
 import './List.css';
 
-export default function List({ list, cards, index, onAddCard, onDeleteCard, onEditCard, session, isExpanded, onToggleExpand }) {
+export default function List({ list, cards, index, onAddCard, onDeleteCard, onEditCard, onDeleteList, session, isExpanded, onToggleExpand }) {
   const [isAdding, setIsAdding] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');
 
@@ -44,7 +44,16 @@ export default function List({ list, cards, index, onAddCard, onDeleteCard, onEd
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)' }}>
               <Plus size={18} style={{ cursor: 'pointer' }} onClick={() => setIsAdding(true)} />
-              <MoreHorizontal size={18} style={{ cursor: 'pointer' }} />
+              <Trash2 
+                size={18} 
+                style={{ cursor: 'pointer', color: '#ef4444' }} 
+                onClick={() => {
+                  if (window.confirm(`Tem certeza que deseja excluir a lista "${list.title}" e todos os seus cartões?`)) {
+                    if (onDeleteList) onDeleteList(list.id);
+                  }
+                }} 
+                title="Excluir Lista"
+              />
             </div>
           </div>
           

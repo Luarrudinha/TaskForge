@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Plus, Users, Layout } from 'lucide-react';
+import { Plus, Users, Layout, Trash2 } from 'lucide-react';
 import './Overview.css';
 
 export default function Overview({ session, onSelectBoard }) {
@@ -84,6 +84,26 @@ export default function Overview({ session, onSelectBoard }) {
     }
   };
 
+  const handleDeleteBoard = async (e, boardId) => {
+    e.stopPropagation();
+    if (window.confirm("Tem certeza que deseja excluir este grupo e todas as suas tarefas?")) {
+      try {
+        setBoards(prevBoards => prevBoards.filter(b => b.id !== boardId));
+
+        const { data: lists } = await supabase.from('lists').select('id').eq('board_id', boardId);
+        if (lists && lists.length > 0) {
+          const listIds = lists.map(l => l.id);
+          await supabase.from('cards').delete().in('list_id', listIds);
+          await supabase.from('lists').delete().eq('board_id', boardId);
+        }
+        await supabase.from('board_members').delete().eq('board_id', boardId);
+        await supabase.from('boards').delete().eq('id', boardId);
+      } catch (err) {
+        console.error('Error deleting board:', err);
+      }
+    }
+  };
+
   if (loading) {
     return <div className="overview-container"><p style={{color: 'var(--text-secondary)'}}>Carregando seus grupos...</p></div>;
   }
@@ -104,8 +124,17 @@ export default function Overview({ session, onSelectBoard }) {
             className="board-card"
             onClick={() => onSelectBoard(board.id)}
           >
-            <div className="board-card-content">
+            <div className="board-card-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <h3>{board.title}</h3>
+              <button 
+                onClick={(e) => handleDeleteBoard(e, board.id)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Excluir Grupo"
+                onMouseOver={(e) => e.currentTarget.style.color = '#ef4444'}
+                onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+              >
+                <Trash2 size={18} />
+              </button>
             </div>
             <div className="board-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

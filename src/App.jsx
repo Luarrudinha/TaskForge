@@ -118,7 +118,7 @@ function MainApp({ session }) {
   } : {};
 
   return (
-    <div className="app-container" style={mainStyle}>
+    <div className="app-container">
       <Sidebar 
         activeView={activeView} 
         onChangeView={(view) => {

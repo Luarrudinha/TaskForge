@@ -335,6 +335,24 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
     }
   };
 
+  const handleDeleteList = async (listId) => {
+    // Optimistic update
+    const newLists = { ...data.lists };
+    delete newLists[listId];
+    const newListOrder = data.listOrder.filter(id => id !== listId);
+
+    setData({
+      ...data,
+      lists: newLists,
+      listOrder: newListOrder
+    });
+
+    // DB Delete
+    // Delete cards first to prevent foreign key constraint errors if ON DELETE CASCADE is not set
+    await supabase.from('cards').delete().eq('list_id', listId);
+    await supabase.from('lists').delete().eq('id', listId);
+  };
+
   const handleShare = () => {
     // Altere este link para o link real onde o seu site vai ficar hospedado!
     const productionUrl = 'https://taskforge-inpe.vercel.app'; 
@@ -444,6 +462,7 @@ export default function Board({ session, sharedBoardId, activeBoardId }) {
                     onAddCard={handleAddCard}
                     onDeleteCard={handleDeleteCard}
                     onEditCard={handleEditCard}
+                    onDeleteList={handleDeleteList}
                     session={session}
                     isExpanded={expandedListId === list.id}
                     onToggleExpand={() => setExpandedListId(expandedListId === list.id ? null : list.id)}
